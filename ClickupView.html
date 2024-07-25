@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embedded ClickUp</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            height: 100vh;
+        }
+        .container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+        .iframe-container {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #ccc;
+            background: transparent;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        iframe {
+            position: absolute;
+            top: -50px;
+            left: 0;
+            width: 100%;
+            height: calc(100% + 50px);
+            border: none;
+        }
+    </style>
+    <script>
+        function refreshIframes() {
+            document.querySelectorAll('iframe').forEach(iframe => {
+                iframe.src = iframe.src;
+            });
+        }
+        setInterval(refreshIframes, 20000); // 20000 ms = 20 seconds
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="iframe-container">
+            <iframe class="clickup-embed" src="https://sharing.clickup.com/14128802/b/h/df5n2-1017/8ac242910f9957b"></iframe>
+        </div>
+        <div class="iframe-container">
+            <iframe class="clickup-embed" src="https://sharing.clickup.com/14128802/c/h/6-901702697979-5/a8887184dec603c"></iframe>
+        </div>
+    </div>
+</body>
+</html>
