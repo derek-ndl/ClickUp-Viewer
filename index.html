@@ -34,14 +34,52 @@
             height: calc(100% + 50px);
             border: none;
         }
+        .cross-marker {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+        }
+        .cross-marker::after {
+            content: '+';
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
     </style>
     <script>
-        function refreshIframes() {
-            document.querySelectorAll('iframe').forEach(iframe => {
-                iframe.src = iframe.src;
-            });
+        function placeCrossMarker(iframe, x, y) {
+            const marker = document.createElement('div');
+            marker.className = 'cross-marker';
+            marker.style.left = `${x}px`;
+            marker.style.top = `${y}px`;
+            iframe.contentWindow.document.body.appendChild(marker);
         }
-        setInterval(refreshIframes, 120000); // 120000 ms = 120 seconds
+
+        window.onload = function() {
+            const calendarIframe = document.querySelector('iframe[src="https://sharing.clickup.com/14128802/c/h/6-901702697979-5/a8887184dec603c"]');
+            
+            if (calendarIframe) {
+                calendarIframe.onload = function() {
+                    setTimeout(() => {
+                        try {
+                            // Adjust these coordinates based on your needs
+                            const x = 1000;  // Example x-coordinate
+                            const y = 50;    // Example y-coordinate
+                            placeCrossMarker(calendarIframe, x, y);
+                        } catch (e) {
+                            console.error("Unable to place marker within iframe due to cross-origin restrictions.");
+                        }
+                    }, 3000); // Delay to ensure the iframe content is fully loaded
+                };
+            }
+        };
     </script>
 </head>
 <body>
