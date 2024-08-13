@@ -17,14 +17,35 @@
             display: flex;
             width: 100%;
             height: 100%;
+            position: relative;
         }
         .iframe-container {
-            flex: 1;
+            width: 60%;
             overflow: hidden;
             position: relative;
             border: 1px solid #ccc;
             background: transparent;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .right-container {
+            width: 40%;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+        }
+        .top-frame {
+            flex: 1;
+            position: relative;
+            border: 1px solid #ccc;
+            z-index: 2; /* Ensure the top frame is above the bottom frame */
+            margin-bottom: -10px; /* Overlay 10px over the bottom frame */
+        }
+        .bottom-frame {
+            flex: 1;
+            position: relative;
+            border: 1px solid #ccc;
+            z-index: 1; /* Place the bottom frame under the top frame */
         }
         iframe {
             position: absolute;
@@ -34,61 +55,20 @@
             height: calc(100% + 50px);
             border: none;
         }
-        .cross-marker {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: red;
-            transform: translate(-50%, -50%);
-            z-index: 1000;
-        }
-        .cross-marker::after {
-            content: '+';
-            color: white;
-            font-size: 12px;
-            font-weight: bold;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
     </style>
-    <script>
-        function placeCrossMarker(iframe, x, y) {
-            const marker = document.createElement('div');
-            marker.className = 'cross-marker';
-            marker.style.left = `${x}px`;
-            marker.style.top = `${y}px`;
-            iframe.contentWindow.document.body.appendChild(marker);
-        }
-
-        window.onload = function() {
-            const calendarIframe = document.querySelector('iframe[src="https://sharing.clickup.com/14128802/c/h/6-901702697979-5/a8887184dec603c"]');
-            
-            if (calendarIframe) {
-                calendarIframe.onload = function() {
-                    setTimeout(() => {
-                        try {
-                            // Adjust these coordinates based on your needs
-                            const x = 1000;  // Example x-coordinate
-                            const y = 50;    // Example y-coordinate
-                            placeCrossMarker(calendarIframe, x, y);
-                        } catch (e) {
-                            console.error("Unable to place marker within iframe due to cross-origin restrictions.");
-                        }
-                    }, 3000); // Delay to ensure the iframe content is fully loaded
-                };
-            }
-        };
-    </script>
 </head>
 <body>
     <div class="container">
         <div class="iframe-container">
-            <iframe class="clickup-embed" src="https://sharing.clickup.com/14128802/b/h/df5n2-1017/8ac242910f9957b"></iframe>
+            <iframe class="clickup-embed" src="https://sharing.clickup.com/14128802/b/h/df5n2-1017/8ac242910f9957b" title="task list"></iframe>
         </div>
-        <div class="iframe-container">
-            <iframe class="clickup-embed" src="https://sharing.clickup.com/14128802/c/h/6-901702697979-5/a8887184dec603c"></iframe>
+        <div class="right-container">
+            <div class="top-frame">
+                <iframe class="clickup-embed" src="https://sharing.clickup.com/14128802/c/h/6-901702697979-5/a8887184dec603c" title="calendar"></iframe>
+            </div>
+            <div class="bottom-frame">
+                <iframe class="clickup-embed" src="https://sharing.clickup.com/14128802/c/h/df5n2-1057/f999bd64eedcbaa" title="new embed" style="background: transparent; border: 1px solid #ccc;"></iframe>
+            </div>
         </div>
     </div>
 </body>
