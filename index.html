@@ -20,39 +20,46 @@
             position: relative;
         }
         .iframe-container {
-            width: 60%;
+            width: 57%;
             overflow: hidden;
             position: relative;
             border: 1px solid #ccc;
             background: transparent;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-40px) scaley(107%); /* Move the left container up by 50px */
         }
         .right-container {
-            width: 40%;
+            width: 43%;
             display: flex;
             flex-direction: column;
             height: 100%;
             position: relative;
         }
-        .top-frame {
+        .top-frame{
             flex: 1;
             position: relative;
             border: 1px solid #ccc;
+            overflow: hidden;
             z-index: 2; /* Ensure the top frame is above the bottom frame */
-            margin-bottom: -10px; /* Overlay 10px over the bottom frame */
         }
         .bottom-frame {
             flex: 1;
             position: relative;
             border: 1px solid #ccc;
+            overflow: hidden;
             z-index: 1; /* Place the bottom frame under the top frame */
         }
-        iframe {
+        .top-frame iframe, .bottom-frame iframe {
             position: absolute;
-            top: -50px;
-            left: 0;
+            width: 200%;  /* Increase width to allow for zoom-out effect */
+            height: 200%; /* Increase height to allow for zoom-out effect */
+            transform: scale(0.5) translate(0, -50px); /* Scale down to 50% (simulating zoom-out) */
+            transform-origin: 0 0; /* Scale from top-left corner */
+            border: none;
+        }
+        .iframe-container iframe {
             width: 100%;
-            height: calc(100% + 50px);
+            height: 100%;
             border: none;
         }
     </style>
@@ -73,7 +80,7 @@
                 <iframe class="clickup-embed" src="https://sharing.clickup.com/14128802/c/h/6-901702697979-5/a8887184dec603c" title="calendar"></iframe>
             </div>
             <div class="bottom-frame">
-                <iframe class="clickup-embed" src="https://sharing.clickup.com/14128802/c/h/df5n2-1057/f999bd64eedcbaa" title="new embed" style="background: transparent; border: 1px solid #ccc;"></iframe>
+                <iframe class="clickup-embed" src="https://sharing.clickup.com/14128802/c/h/df5n2-1057/f999bd64eedcbaa" title="new embed"></iframe>
             </div>
         </div>
     </div>
