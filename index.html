@@ -3,86 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Embedded ClickUp</title>
+    <title>Forms Website</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        html, body {
+            height: 100%;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
-            display: flex;
-            height: 100vh;
-        }
-        .container {
-            display: flex;
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
-        .iframe-container {
-            width: 57%;
-            overflow: hidden;
-            position: relative;
-            border: 1px solid #ccc;
-            background: transparent;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transform: translateY(-40px) scaley(107%); /* Move the left container up by 50px */
-        }
-        .right-container {
-            width: 43%;
+            font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
-            height: 100%;
-            position: relative;
         }
-        .top-frame{
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 1in;
+            padding: 0 20px;
+            border-bottom: 1px solid #ccc;
+            background-color: #f9f9f9;
+            flex-shrink: 0;
+        }
+        .header .left-buttons,
+        .header .right-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .main-content {
+            display: flex;
             flex: 1;
-            position: relative;
-            border: 1px solid #ccc;
-            overflow: hidden;
-            z-index: 2; /* Ensure the top frame is above the bottom frame */
+            height: calc(100% - 1in); /* Fill remaining space below header */
         }
-        .bottom-frame {
+        iframe {
             flex: 1;
-            position: relative;
             border: 1px solid #ccc;
-            overflow: hidden;
-            z-index: 1; /* Place the bottom frame under the top frame */
+            width: 50%; /* Split the space equally between Frame A and Frame B */
+            height: 100%; /* Ensure iframes fill the vertical space */
         }
-        .top-frame iframe, .bottom-frame iframe {
-            position: absolute;
-            width: 200%;  /* Increase width to allow for zoom-out effect */
-            height: 200%; /* Increase height to allow for zoom-out effect */
-            transform: scale(0.5) translate(0, -50px); /* Scale down to 50% (simulating zoom-out) */
-            transform-origin: 0 0; /* Scale from top-left corner */
-            border: none;
+        button {
+            padding: 10px 20px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            background-color: white;
+            color: black;
         }
-        .iframe-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
+        button.active {
+            background-color: grey;
+            color: white;
         }
     </style>
-    <script>
-        // Function to refresh the page every 10 minutes (600,000 milliseconds)
-        setTimeout(function(){
-            window.location.reload();
-        }, 600000); // 600000 ms = 10 minutes
-    </script>
 </head>
 <body>
-    <div class="container">
-        <div class="iframe-container">
-            <iframe class="clickup-embed" src="https://sharing.clickup.com/14128802/b/h/df5n2-1017/8ac242910f9957b" title="task list"></iframe>
+    <div class="header">
+        <div class="right-buttons">
+            <h1 style="margin: 0;">Forms</h1>
+            <button onclick="loadInboundForm()">Inbound Shipment Form</button>
+            <button onclick="loadEquipmentForm()">Equipment Request Form</button>
         </div>
-        <div class="right-container">
-            <div class="top-frame">
-                <iframe class="clickup-embed" src="https://sharing.clickup.com/14128802/c/h/6-901702697979-5/a8887184dec603c" title="calendar"></iframe>
-            </div>
-            <div class="bottom-frame">
-                <iframe class="clickup-embed" src="https://sharing.clickup.com/14128802/c/h/df5n2-1057/f999bd64eedcbaa" title="new embed"></iframe>
-            </div>
+        <div class="left-buttons">
+            <button id="listButton" class="active" onclick="toggleView('list')">List</button>
+            <button id="calendarButton" onclick="toggleView('calendar')">Calendar</button>
         </div>
     </div>
+    <div class="main-content">
+        <iframe id="frameA" class="clickup-embed clickup-dynamic-height" src="https://forms.clickup.com/14128802/f/df5n2-997/YDHTGHC9TQ8RSO671Q" style="background: transparent;"></iframe>
+        <iframe id="frameB" class="clickup-embed" src="https://sharing.clickup.com/14128802/b/h/df5n2-1017/8ac242910f9957b" style="background: transparent;"></iframe>
+    </div>
+    <script async src="https://app-cdn.clickup.com/assets/js/forms-embed/v1.js"></script>
+
+    <script>
+        let currentForm = "inbound";
+
+        function loadInboundForm() {
+            const frameA = document.getElementById('frameA');
+            const frameB = document.getElementById('frameB');
+            currentForm = "inbound";
+            frameA.src = "https://forms.clickup.com/14128802/f/df5n2-997/YDHTGHC9TQ8RSO671Q";
+
+            const listButton = document.getElementById('listButton');
+            if (listButton.classList.contains('active')) {
+                frameB.src = "https://sharing.clickup.com/14128802/b/h/df5n2-1017/8ac242910f9957b";
+            } else {
+                frameB.src = "https://sharing.clickup.com/14128802/c/h/6-901702697979-5/a8887184dec603c";
+            }
+        }
+
+        function loadEquipmentForm() {
+            const frameA = document.getElementById('frameA');
+            const frameB = document.getElementById('frameB');
+            currentForm = "equipment";
+            frameA.src = "https://forms.clickup.com/14128802/f/df5n2-1117/F4PI9SPHPNBPZSHQUQ";
+
+            const listButton = document.getElementById('listButton');
+            if (listButton.classList.contains('active')) {
+                frameB.src = "https://sharing.clickup.com/14128802/b/h/6-901703591027-2/149b4395391f8a5";
+            } else {
+                frameB.src = "https://sharing.clickup.com/14128802/c/h/6-901703591027-5/bd7de68cb1cecbf";
+            }
+        }
+
+        function toggleView(view) {
+            const frameB = document.getElementById('frameB');
+            const listButton = document.getElementById('listButton');
+            const calendarButton = document.getElementById('calendarButton');
+
+            if (view === 'list') {
+                listButton.classList.add('active');
+                calendarButton.classList.remove('active');
+                if (currentForm === "inbound") {
+                    frameB.src = "https://sharing.clickup.com/14128802/b/h/df5n2-1017/8ac242910f9957b";
+                } else if (currentForm === "equipment") {
+                    frameB.src = "https://sharing.clickup.com/14128802/b/h/6-901703591027-2/149b4395391f8a5";
+                }
+            } else if (view === 'calendar') {
+                calendarButton.classList.add('active');
+                listButton.classList.remove('active');
+                if (currentForm === "inbound") {
+                    frameB.src = "https://sharing.clickup.com/14128802/c/h/6-901702697979-5/a8887184dec603c";
+                } else if (currentForm === "equipment") {
+                    frameB.src = "https://sharing.clickup.com/14128802/c/h/6-901703591027-5/bd7de68cb1cecbf";
+                }
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const listButton = document.getElementById('listButton');
+            const calendarButton = document.getElementById('calendarButton');
+            const frameB = document.getElementById('frameB');
+
+            listButton.classList.add('active');
+            calendarButton.classList.remove('active');
+
+            frameB.src = "https://sharing.clickup.com/14128802/b/h/df5n2-1017/8ac242910f9957b";
+        });
+    </script>
 </body>
 </html>
