@@ -18,15 +18,31 @@
             justify-content: space-between;
             align-items: center;
             height: 1in;
-            padding: 0 20px;
+            padding: 0 10px;
             border-bottom: 1px solid #ccc;
             background-color: #f9f9f9;
             flex-shrink: 0;
+            flex-wrap: nowrap;
+            position: relative; /* Ensure the header is part of the stacking context */
+            z-index: 10; /* Higher z-index to stay above Frame B */
         }
-        .header .left-buttons,
-        .header .right-buttons {
+        .mainview-buttons {
             display: flex;
-            gap: 10px;
+            gap: 10px; /* Slightly reduce the gap between buttons */
+            flex-wrap: nowrap; /* Ensure buttons stay on one line */
+        }
+        .detailview-buttons{
+            display: flex;
+            gap: 0px;
+            width: 2in;
+        }
+        .mainview-buttons button {
+            background-color: #f9f9f9; /* Set background to white */
+            color: black; /* Set text color to black */
+            font-size: 1.2rem; /* Increase text size */
+            padding: 10px 20px; /* Adjust padding for better appearance */
+            border: 0px solid #ccc; /* Optional: Add border for button definition */
+            cursor: pointer; /* Add a pointer cursor for better UX */
         }
         .main-content {
             display: flex;
@@ -39,101 +55,194 @@
             width: 50%; /* Split the space equally between Frame A and Frame B */
             height: 100%; /* Ensure iframes fill the vertical space */
         }
-        button {
+        .mainview-buttons button {
+            background-color: #f9f9f9; /* Set background to white */
+            color: black; /* Set text color to black */
+            font-size: 1.2rem; /* Increase text size */
+            padding: 10px 20px; /* Adjust padding for better appearance */
+            border: 0px solid #ccc; /* Optional: Add border for button definition */
+            cursor: pointer; /* Add a pointer cursor for better UX */
+        }
+        .detailview-buttons button {
+            flex: 1; /* Make buttons equal width */
             padding: 10px 20px;
             border: 1px solid #ccc;
             cursor: pointer;
             background-color: white;
             color: black;
         }
+        
+        .mainview-buttons button.active {
+            background-color: white;
+            color: white;
+        }
         button.active {
             background-color: grey;
             color: white;
         }
+        
+        /* Frame A and B wrappers */
+        #frameA-wrapper,
+        #frameB-wrapper {
+            position: relative;
+            height: 700px;
+            overflow: hidden;
+            width: 50%; /* Adjust frame widths as needed */
+            border: 1px solid #ccc;
+        }
+
+        /* Frame A */
+        iframe#frameA {
+            position: relative;
+            top: -50px; /* Shift up to align clipped region */
+            height: calc(750px); /* Compensate for the clipped top */
+            width: 100%;
+            clip-path: inset(50px 0px 0px 0px); /* Clip top 50px */
+            border: none;
+        }
+
+        /* Frame B */
+        iframe#frameB {
+            position: relative;
+            top: -50px; /* Shift up to align clipped region */
+            height: calc(750px); /* Compensate for the clipped top */
+            width: 100%;
+            clip-path: inset(50px 0px 0px 0px); /* Clip top 50px */
+            border: none;
+        }
+
+        iframe#frameB.calendar-view {
+            transform: scaleY(0.85); /* Scale down contents to 90% in the Y direction */
+            transform-origin: top; /* Anchor the scaling to the top */
+            width: 100%; /* Ensure full width is maintained */
+            height: calc(750px/0.85) !important; /* Maintain the frame's overall height */
+            border: none;
+        }
+
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="right-buttons">
-            <h1 style="margin: 0;">Forms</h1>
+        <div class="mainview-buttons">
+            <h1>Forms</h1>
             <button onclick="loadInboundForm()">Inbound Shipment Form</button>
             <button onclick="loadEquipmentForm()">Equipment Request Form</button>
         </div>
-        <div class="left-buttons">
+        <div class="detailview-buttons">
             <button id="listButton" class="active" onclick="toggleView('list')">List</button>
             <button id="calendarButton" onclick="toggleView('calendar')">Calendar</button>
         </div>
     </div>
     <div class="main-content">
-        <iframe id="frameA" class="clickup-embed clickup-dynamic-height" src="https://forms.clickup.com/14128802/f/df5n2-997/YDHTGHC9TQ8RSO671Q" style="background: transparent;"></iframe>
-        <iframe id="frameB" class="clickup-embed" src="https://sharing.clickup.com/14128802/b/h/df5n2-1017/8ac242910f9957b" style="background: transparent;"></iframe>
+        <!-- Frame A Wrapper -->
+        <div id="frameA-wrapper">
+            <iframe 
+                id="frameA" 
+                class="clickup-embed" 
+                src="https://forms.clickup.com/14128802/f/df5n2-997/YDHTGHC9TQ8RSO671Q" 
+                scrolling="auto">
+            </iframe>
+        </div>
+
+        <!-- Frame B Wrapper -->
+        <div id="frameB-wrapper">
+            <iframe 
+                id="frameB" 
+                class="clickup-embed" 
+                src="https://sharing.clickup.com/14128802/b/h/df5n2-1017/8ac242910f9957b" 
+                scrolling="auto">
+            </iframe>
+        </div>
     </div>
     <script async src="https://app-cdn.clickup.com/assets/js/forms-embed/v1.js"></script>
-
     <script>
-        let currentForm = "inbound";
+        // Tracks the current form loaded in Frame A
+        let currentForm = "inbound"; // Default is "Inbound Shipment Form"
 
         function loadInboundForm() {
             const frameA = document.getElementById('frameA');
             const frameB = document.getElementById('frameB');
             currentForm = "inbound";
+
+            // Frame A - Inbound Shipment Form
             frameA.src = "https://forms.clickup.com/14128802/f/df5n2-997/YDHTGHC9TQ8RSO671Q";
 
-            const listButton = document.getElementById('listButton');
-            if (listButton.classList.contains('active')) {
-                frameB.src = "https://sharing.clickup.com/14128802/b/h/df5n2-1017/8ac242910f9957b";
-            } else {
-                frameB.src = "https://sharing.clickup.com/14128802/c/h/6-901702697979-5/a8887184dec603c";
-            }
+            // Update Frame B based on the current active view
+            updateFrameB();
         }
 
         function loadEquipmentForm() {
             const frameA = document.getElementById('frameA');
             const frameB = document.getElementById('frameB');
             currentForm = "equipment";
+
+            // Frame A - Equipment Request Form
             frameA.src = "https://forms.clickup.com/14128802/f/df5n2-1117/F4PI9SPHPNBPZSHQUQ";
 
-            const listButton = document.getElementById('listButton');
-            if (listButton.classList.contains('active')) {
-                frameB.src = "https://sharing.clickup.com/14128802/b/h/6-901703591027-2/149b4395391f8a5";
-            } else {
-                frameB.src = "https://sharing.clickup.com/14128802/c/h/6-901703591027-5/bd7de68cb1cecbf";
-            }
+            // Update Frame B based on the current active view
+            updateFrameB();
         }
 
         function toggleView(view) {
             const frameB = document.getElementById('frameB');
             const listButton = document.getElementById('listButton');
             const calendarButton = document.getElementById('calendarButton');
-
+        
+            // Reset buttons
+            listButton.classList.remove('active');
+            calendarButton.classList.remove('active');
+        
+            // Remove any existing view-specific classes
+            frameB.classList.remove('calendar-view');
+        
             if (view === 'list') {
                 listButton.classList.add('active');
-                calendarButton.classList.remove('active');
-                if (currentForm === "inbound") {
+        
+                // No scaling for list view, just update the content
+                if (currentForm === 'inbound') {
                     frameB.src = "https://sharing.clickup.com/14128802/b/h/df5n2-1017/8ac242910f9957b";
-                } else if (currentForm === "equipment") {
+                } else if (currentForm === 'equipment') {
                     frameB.src = "https://sharing.clickup.com/14128802/b/h/6-901703591027-2/149b4395391f8a5";
                 }
             } else if (view === 'calendar') {
                 calendarButton.classList.add('active');
-                listButton.classList.remove('active');
-                if (currentForm === "inbound") {
+        
+                // Apply scaling for calendar view
+                frameB.classList.add('calendar-view');
+        
+                if (currentForm === 'inbound') {
                     frameB.src = "https://sharing.clickup.com/14128802/c/h/6-901702697979-5/a8887184dec603c";
-                } else if (currentForm === "equipment") {
+                } else if (currentForm === 'equipment') {
                     frameB.src = "https://sharing.clickup.com/14128802/c/h/6-901703591027-5/bd7de68cb1cecbf";
                 }
             }
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const listButton = document.getElementById('listButton');
-            const calendarButton = document.getElementById('calendarButton');
+
+        function updateFrameB() {
             const frameB = document.getElementById('frameB');
+            const listButton = document.getElementById('listButton');
 
-            listButton.classList.add('active');
-            calendarButton.classList.remove('active');
+            if (listButton.classList.contains('active')) {
+                // List view
+                if (currentForm === 'inbound') {
+                    frameB.src = "https://sharing.clickup.com/14128802/b/h/df5n2-1017/8ac242910f9957b";
+                } else if (currentForm === 'equipment') {
+                    frameB.src = "https://sharing.clickup.com/14128802/b/h/6-901703591027-2/149b4395391f8a5";
+                }
+            } else {
+                // Calendar view
+                if (currentForm === 'inbound') {
+                    frameB.src = "https://sharing.clickup.com/14128802/c/h/6-901702697979-5/a8887184dec603c";
+                } else if (currentForm === 'equipment') {
+                    frameB.src = "https://sharing.clickup.com/14128802/c/h/6-901703591027-5/bd7de68cb1cecbf";
+                }
+            }
+        }
 
-            frameB.src = "https://sharing.clickup.com/14128802/b/h/df5n2-1017/8ac242910f9957b";
+        // Initialize default state on page load
+        document.addEventListener("DOMContentLoaded", () => {
+            loadInboundForm(); // Load default content
         });
     </script>
 </body>
